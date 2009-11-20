@@ -11,6 +11,14 @@ describe MScript::Config do
   #       MScript::Config.new(nil).should raise_error
   #   end
   
+  # it "should raise an error if a directory alias can not be resolved to a directory" do
+  #     @config.to_directory('doesNotExist').should raise_error(ArgumentError, "Could not locate directory for alias 'doesNotExist'")
+  #   end
+  #   
+  #   it "should raise an error if a phase alias can not be resolved to a phase" do
+  #     @config.to_phase('doesNotExist').should raise_error(ArgumentError, "Could not locate phase for alias 'doesNotExist'")
+  #   end
+  
   it "should resolve to proper phase when an alias is given" do
     @config.to_phase('i').should == 'install'
   end

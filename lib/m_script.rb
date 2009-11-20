@@ -54,10 +54,12 @@ module MScript
     end
     
     def to_directory(dir_alias)
+      raise ArgumentError, "Could not locate directory for alias '#{dir_alias}'" if !@alias_to_directory.has_key?(dir_alias)
       File.join(@project_directory, @alias_to_directory[dir_alias])
     end
     
     def to_phase(phase_alias)
+      raise ArgumentError, "Could not locate phase for alias '#{phase_alias}'" if !@phases.has_key?(phase_alias)
       @phases[phase_alias]
     end
   end
