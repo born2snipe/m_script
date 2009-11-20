@@ -7,27 +7,37 @@ describe MScript::Config do
      @config = MScript::Config.new(@project_dir)
   end
   
-  # it "should throw an error if project directory is nil" do
-  #       MScript::Config.new(nil).should raise_error
-  #   end
+  it "should throw an error if project directory is nil" do
+    lambda { 
+      MScript::Config.new(nil)
+    }.should raise_error(RuntimeError, "Could not locate project directory")
+  end
   
-  # it "should raise an error if a directory alias can not be resolved to a directory" do
-  #     @config.to_directory('doesNotExist').should raise_error(ArgumentError, "Could not locate directory for alias 'doesNotExist'")
-  #   end
+  it "should raise an error if a directory alias can not be resolved to a directory" do
+     lambda { 
+       @config.to_directory('doesNotExist')
+     }.should raise_error(ArgumentError, "Could not locate directory for alias 'doesNotExist'")
+  end
 
-  #   it "should raise an error if a phase alias can not be resolved to a phase" do
-  #     @config.to_phase('doesNotExist').should raise_error(ArgumentError, "Could not locate phase for alias 'doesNotExist'")
-  #   end
+  it "should raise an error if a phase alias can not be resolved to a phase" do
+    lambda { 
+     @config.to_phase('doesNotExist') 
+    }.should raise_error(ArgumentError, "Could not locate phase for alias 'doesNotExist'")
+   end
   
-  # it "should raise an error if no phases are defined in the configuration file" do
-  #   project_dir = File.expand_path(File.join(File.dirname(__FILE__), '..', 'fixtures', 'no-phases-defined-project'))
-  #   config = MScript::Config.new(project_dir).should raise_error()
-  # end
+   it "should raise an error if no phases are defined in the configuration file" do
+     lambda { 
+       project_dir = File.expand_path(File.join(File.dirname(__FILE__), '..', 'fixtures', 'no-phases-defined-project'))
+       config = MScript::Config.new(project_dir)
+      }.should raise_error(RuntimeError, "No phases defined in configuration file: m.yml")
+   end
 
-  # it "should raise an error if to folders auto-aliased and have the same alias" do
-  #     project_dir = File.expand_path(File.join(File.dirname(__FILE__), '..', 'fixtures', 'conflicting-auto-alias-project'))
-  #     MScript::Config.new(project_dir).should raise_error(ArgumentError, "Folders [module1, module2] have conflicting aliases. I would recommend defining aliases for these two folder in the m.yml file")
-  #   end
+  it "should raise an error if to folders auto-aliased and have the same alias" do
+    lambda { 
+      project_dir = File.expand_path(File.join(File.dirname(__FILE__), '..', 'fixtures', 'conflicting-auto-alias-project'))
+       MScript::Config.new(project_dir)
+    }.should raise_error(ArgumentError, "Folders [module1, module2] have conflicting aliases. I would recommend defining aliases for these two folder in the m.yml file")
+  end
   
   it "should not auto-generate folder alias for folders that do NOT contain a pom file" do
     project_dir = File.expand_path(File.join(File.dirname(__FILE__), '..', 'fixtures', 'ignore-non-pom-directories'))

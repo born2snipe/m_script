@@ -51,7 +51,7 @@ module MScript
     	attr_reader :project_directory, :additional_args, :phases, :directory_aliases
     
     def initialize(project_directory)
-      raise "Could not locate project configuration file: #{CONFIG_FILENAME} in directory: #{project_directory}" if project_directory == nil
+      raise "Could not locate project directory" if project_directory == nil
       @file_util = MScript::FileUtil.new
       @project_directory = project_directory
       config_file = YAML::load_file(File.join(project_directory, CONFIG_FILENAME));
