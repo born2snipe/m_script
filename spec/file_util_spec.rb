@@ -8,6 +8,22 @@ describe MScript::FileUtil do
       @project_dir = File.expand_path(File.join(@fixtures, 'project'))
   end
   
+  it "should return false if the folder does not contain a pom file" do
+    @util.maven_project?(@fixtures).should == false
+  end
+  
+  it "should return true if the folder contains a pom file" do
+    @util.maven_project?(File.join(@project_dir, 'module')).should == true
+  end
+  
+  it "should generate an alias based on the delimiter of the folder name" do
+    @util.alias('module-2').should == 'm2'
+  end
+  
+  it "should an alias from the give directory" do
+    @util.alias('module').should == 'm'
+  end
+  
   it "should return nil if the current directory does not exist" do
     @util.locate_project_directory('doesNotExist').should == nil
   end

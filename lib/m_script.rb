@@ -21,6 +21,20 @@ module MScript
         current_directory
       end
     end
+    
+    def alias(directory) 
+      if (directory.index('-'))
+        dir_alias = ""
+        directory.split('-').each { |x| dir_alias += x[0,1]}
+        dir_alias
+      else
+        directory[0,1]
+      end
+    end
+    
+    def maven_project?(directory)
+      File.exist?(File.join(directory, 'pom.xml'))
+    end
   end
   
   class Config
@@ -28,6 +42,7 @@ module MScript
     
     def initialize(project_directory)
       raise "Could not locate project configuration file: #{CONFIG_FILENAME} in directory: #{project_directory}" if project_directory == nil
+      @file_util = MScript::FileUtil.new
       @project_directory = project_directory
       config_file = YAML::load_file(File.join(project_directory, CONFIG_FILENAME));
       if (config_file['arguments'])
@@ -50,14 +65,8 @@ module MScript
       
       Dir.new(project_directory).entries.each do |dir|
         directory = File.expand_path(File.join(project_directory, dir))
-        if dir != '..' && dir != '.' && !dir_has_alias.include?(dir) && File.directory?(directory) && File.exist?(File.join(directory, 'pom.xml'))
-          if (dir.index('-'))
-            dir_alias = ""
-            dir.split('-').each { |x| dir_alias += x[0,1]}
-            @directory_aliases[dir] = [dir_alias, dir]
-          else
-            @directory_aliases[dir] = [dir[0,1], dir]
-          end
+        if dir != '..' && dir != '.' && !dir_has_alias.include?(dir) && File.directory?(directory) && @file_util.maven_project?(directory)
+          @directory_aliases[dir] = [@file_util.alias(dir), dir]          
         end
       end
       
