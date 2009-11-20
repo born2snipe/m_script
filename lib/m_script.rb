@@ -34,9 +34,14 @@ module MScript
       @phases = {}
       @directory_aliases = {}
       config_file['phases'].each { |phase| @phases[phase[0,1]] = phase }
+      dir_has_alias = []
+      config_file['directory_mappings'].each do |key, value| 
+        @directory_aliases[value] = [key]
+        dir_has_alias << value
+      end
       
       Dir.new(project_directory).entries.each do |dir|
-        if dir != '..' && dir != '.' && File.directory?(File.expand_path(File.join(project_directory, dir)))
+        if dir != '..' && dir != '.' && !dir_has_alias.include?(dir) && File.directory?(File.expand_path(File.join(project_directory, dir)))
           if (dir.index('-'))
             dir_alias = ""
             dir.split('-').each { |x| dir_alias += x[0,1]}

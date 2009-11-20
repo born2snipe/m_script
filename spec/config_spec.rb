@@ -27,8 +27,8 @@ describe MScript::Config do
     @config.to_directory('m').should == File.join(@project_dir, 'module')
   end
   
-  it "should calculate alias for directories that do not have directory-mappings defined" do
-    @config.directory_aliases.should == {'module'=>['m', 'module'], 'other-module'=>['om', 'other-module']}
+  it "should calculate alias for directories" do
+    @config.directory_aliases.should == {'module'=>['m', 'module'], 'other-module'=>['om', 'other-module'], 'really-really-really-really-really-long-folder-name'=>['long']}
   end
   
   it "should return a map of phases with thier aliases" do
