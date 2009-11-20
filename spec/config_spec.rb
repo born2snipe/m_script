@@ -4,11 +4,7 @@ describe MScript::Config do
   
   before(:each) do
      @project_dir = File.expand_path(File.join(File.dirname(__FILE__), '..', 'fixtures', 'project'))
-    
-      # @file_util = mock('file_util')
-      
-      @config = MScript::Config.new(@project_dir)
-      # @config.file_util = @file_util
+     @config = MScript::Config.new(@project_dir)
   end
   
   # it "should throw an error if project directory is nil" do
