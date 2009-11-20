@@ -8,6 +8,10 @@ describe MScript::FileUtil do
       @project_dir = File.expand_path(File.join(@fixtures, 'project'))
   end
   
+  it "should return all directories, not including itself or parent dir" do
+    @util.dirs(@project_dir).should == ['module', 'other-module', 'really-really-really-really-really-long-folder-name']
+  end
+  
   it "should return false if the folder does not contain a pom file" do
     @util.maven_project?(@fixtures).should == false
   end

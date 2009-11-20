@@ -35,6 +35,16 @@ module MScript
     def maven_project?(directory)
       File.exist?(File.join(directory, 'pom.xml'))
     end
+    
+    def dirs(directory)
+      dirs = []
+      Dir.new(directory).entries.each do |dir|
+        if File.directory?(File.expand_path(File.join(directory, dir))) && dir != '..' && dir != '.'
+          dirs << dir
+        end
+      end
+      dirs
+    end
   end
   
   class Config
@@ -63,9 +73,8 @@ module MScript
         end
       end
       
-      Dir.new(project_directory).entries.each do |dir|
-        directory = File.expand_path(File.join(project_directory, dir))
-        if dir != '..' && dir != '.' && !dir_has_alias.include?(dir) && File.directory?(directory) && @file_util.maven_project?(directory)
+      @file_util.dirs(project_directory).each do |dir|
+        if !dir_has_alias.include?(dir) && @file_util.maven_project?(File.expand_path(File.join(project_directory, dir)))
           @directory_aliases[dir] = [@file_util.alias(dir), dir]          
         end
       end
