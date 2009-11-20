@@ -14,10 +14,33 @@ describe MScript::Config do
   # it "should raise an error if a directory alias can not be resolved to a directory" do
   #     @config.to_directory('doesNotExist').should raise_error(ArgumentError, "Could not locate directory for alias 'doesNotExist'")
   #   end
-  #   
+
   #   it "should raise an error if a phase alias can not be resolved to a phase" do
   #     @config.to_phase('doesNotExist').should raise_error(ArgumentError, "Could not locate phase for alias 'doesNotExist'")
   #   end
+  
+  # it "should raise an error if no phases are defined in the configuration file" do
+  #   project_dir = File.expand_path(File.join(File.dirname(__FILE__), '..', 'fixtures', 'no-phases-defined-project'))
+  #   config = MScript::Config.new(project_dir).should raise_error()
+  # end
+  
+  it "should not auto-generate folder alias for folders that do NOT contain a pom file" do
+    project_dir = File.expand_path(File.join(File.dirname(__FILE__), '..', 'fixtures', 'ignore-non-pom-directories'))
+    config = MScript::Config.new(project_dir)
+    config.directory_aliases.should == {'module2' => ['m', 'module2']}
+  end
+  
+  it "should not require defining directory mappings in the configuration file" do
+    project_dir = File.expand_path(File.join(File.dirname(__FILE__), '..', 'fixtures', 'no-directory-mappings-project'))
+    config = MScript::Config.new(project_dir)
+    config.directory_aliases.should == {'module1' => ['m', 'module1']}
+  end
+  
+  it "should not require defining of additional args in the configuration file" do
+    project_dir = File.expand_path(File.join(File.dirname(__FILE__), '..', 'fixtures', 'no-additional-args-project'))
+    config = MScript::Config.new(project_dir)
+    config.additional_args.should == []
+  end
   
   it "should resolve to proper phase when an alias is given" do
     @config.to_phase('i').should == 'install'

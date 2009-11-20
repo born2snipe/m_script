@@ -30,18 +30,27 @@ module MScript
       raise "Could not locate project configuration file: #{CONFIG_FILENAME} in directory: #{project_directory}" if project_directory == nil
       @project_directory = project_directory
       config_file = YAML::load_file(File.join(project_directory, CONFIG_FILENAME));
-      @additional_args = config_file['arguments']
+      if (config_file['arguments'])
+        @additional_args = config_file['arguments']
+      else
+        @additional_args = []
+      end
       @phases = {}
       @directory_aliases = {}
+      
+      raise "No phases defined in configuration file: #{CONFIG_FILENAME}" if !config_file['phases']
       config_file['phases'].each { |phase| @phases[phase[0,1]] = phase }
       dir_has_alias = []
-      config_file['directory_mappings'].each do |key, value| 
-        @directory_aliases[value] = [key]
-        dir_has_alias << value
+      if (config_file['directory_mappings'])
+        config_file['directory_mappings'].each do |key, value| 
+          @directory_aliases[value] = [key]
+          dir_has_alias << value
+        end
       end
       
       Dir.new(project_directory).entries.each do |dir|
-        if dir != '..' && dir != '.' && !dir_has_alias.include?(dir) && File.directory?(File.expand_path(File.join(project_directory, dir)))
+        directory = File.expand_path(File.join(project_directory, dir))
+        if dir != '..' && dir != '.' && !dir_has_alias.include?(dir) && File.directory?(directory) && File.exist?(File.join(directory, 'pom.xml'))
           if (dir.index('-'))
             dir_alias = ""
             dir.split('-').each { |x| dir_alias += x[0,1]}
