@@ -16,7 +16,19 @@ describe MScript::FileUtil do
     @util.maven_project?(File.join(@project_dir, 'module')).should == true
   end
   
-  it "should generate an alias based on the delimiter of the folder name" do
+  it "should generate a single letter alias if the filename begins and ends with a -" do
+    @util.alias('-module-').should == 'm'
+  end
+  
+  it "should generate a single letter alias if the filename begins with a -" do
+    @util.alias('-module').should == 'm'
+  end
+  
+  it "should generate a single letter alias if the filename ends with a -" do
+    @util.alias('module-').should == 'm'
+  end
+  
+  it "should generate an alias based on the - delimiter of the folder name" do
     @util.alias('module-2').should == 'm2'
   end
   
