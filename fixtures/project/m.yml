@@ -1,0 +1,6 @@
+arguments:
+    - -ff
+    
+phases:
+    - clean
+    - install

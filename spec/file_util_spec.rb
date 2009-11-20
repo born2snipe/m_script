@@ -8,8 +8,12 @@ describe MScript::FileUtil do
       @project_dir = File.expand_path(File.join(@fixtures, 'project'))
   end
   
+  it "should return nil if the current directory does not exist" do
+    @util.locate_project_directory('doesNotExist').should == nil
+  end
+  
   it "should look recursively up the directory structure for the yml file" do
-    dir = File.expand_path(File.join(@fixtures, 'project', 'nested'))
+    dir = File.expand_path(File.join(@fixtures, 'project', 'module'))
     @util.locate_project_directory(dir).should == @project_dir
   end
   
