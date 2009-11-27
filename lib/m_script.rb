@@ -3,6 +3,43 @@ require 'yaml'
 module MScript 
   CONFIG_FILENAME = 'm.yml'
   
+  class Executor
+    def initialize()
+      @file_util = MScript::FileUtil.new
+    end
+    
+    def execute(args)
+
+    end
+    
+    def show_help()
+      config = MScript::Config.new(@file_util.locate_project_directory(File.expand_path('.')))
+      
+      puts "\n"
+      puts "Project Directory: #{config.project_directory}\n\n"
+      puts "Directory to Alias(es):\n---------------------------\n"
+      
+      longest_name = ""
+      config.directory_aliases.each do |key, value|
+        if (key.length > longest_name.length)
+          longest_name = key
+        end
+      end
+      
+      config.directory_aliases.each do |key, value|
+        number_of_dots = longest_name.length + 2 - key.length
+        count = 0
+        dots = ""
+        while count < number_of_dots
+          dots += "."
+          count += 1
+        end
+        puts "#{key}#{dots}#{value.join(', ')}\n"
+      end
+      puts "\n"
+    end
+  end
+  
   class CygwinUtil
     def fix_path(path) 
       path.gsub(/\/cygdrive\/(.)\/(.*)/, '\1:/\2')

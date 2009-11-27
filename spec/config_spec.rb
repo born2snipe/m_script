@@ -7,6 +7,10 @@ describe MScript::Config do
      @config = MScript::Config.new(@project_dir)
   end
   
+  ##################################
+  # TODO - these validation checks should be done by another class
+  ##################################
+  
   it "should throw an error if project directory is nil" do
     lambda { 
       MScript::Config.new(nil)
@@ -32,7 +36,7 @@ describe MScript::Config do
       }.should raise_error(RuntimeError, "No phases defined in configuration file: m.yml")
    end
 
-  it "should raise an error if to folders auto-aliased and have the same alias" do
+  it "should raise an error if two folders auto-aliased and have the same alias" do
     lambda { 
       project_dir = File.expand_path(File.join(File.dirname(__FILE__), '..', 'fixtures', 'conflicting-auto-alias-project'))
        MScript::Config.new(project_dir)
