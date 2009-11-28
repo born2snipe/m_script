@@ -1,15 +1,43 @@
 require 'yaml'
 
+
+# Possibilities:
+# - do not depend on the '&&' to determine when build should stop
+# - keep an index of the order of modules (simulates reactor) and auto-correct order mistakes
+# - keep track of elapsed build time
+# - a way to generate a skeleton 'm.yml' file
+# 
 module MScript 
   CONFIG_FILENAME = 'm.yml'
   
   class Executor
     def initialize()
       @file_util = MScript::FileUtil.new
+      @arg_parser = MScript::ArgParser.new
     end
     
     def execute(args)
-
+      config = MScript::Config.new(@file_util.locate_project_directory(File.expand_path('.')))
+      builds = @arg_parser.parse(args)
+      
+      builds['projects'].each do |project|
+        directory_alias = project['project']
+        phase_aliases = project['phases']
+        
+        phases = []
+        index = 0;
+        while index < phase_aliases.length
+          phases << config.to_phase(phase_aliases[index, 1])
+          index += 1
+        end
+        
+        command = "mvn #{phases.join(' ')} -f #{File.join(config.to_directory(directory_alias), 'pom.xml')} #{builds['arguments']}"
+      
+        puts "------------------------------\nM Script Running....\n------------------------------\n#{command}\n------------------------------\n"
+        system command
+        
+      end
+      
     end
     
     def show_help()
@@ -37,6 +65,28 @@ module MScript
         puts "#{key}#{dots}#{value.join(', ')}\n"
       end
       puts "\n"
+    end
+  end
+  
+  class ArgParser 
+    def parse(args)
+      builds = {}
+      projects = []
+      builds['projects'] = projects
+      builds['arguments'] = []
+
+      index = 0
+      while index < args.length
+        if (args[index][0,1] == '-')
+          builds['arguments'] << args[index]
+          index += 1
+        else
+          projects << {'phases' => args[index], 'project' => args[index + 1]}
+          index += 2
+        end
+      end
+      
+      builds
     end
   end
   
@@ -89,7 +139,10 @@ module MScript
     
     def initialize(project_directory)
       raise "Could not locate project directory" if project_directory == nil
+      
       @file_util = MScript::FileUtil.new
+      @cygwin_util = MScript::CygwinUtil.new
+      
       @project_directory = project_directory
       config_file = YAML::load_file(File.join(project_directory, CONFIG_FILENAME));
       if (config_file['arguments'])
@@ -124,7 +177,7 @@ module MScript
     
     def to_directory(dir_alias)
       raise ArgumentError, "Could not locate directory for alias '#{dir_alias}'" if !@alias_to_directory.has_key?(dir_alias)
-      File.join(@project_directory, @alias_to_directory[dir_alias])
+      @cygwin_util.fix_path(File.join(@project_directory, @alias_to_directory[dir_alias]))
     end
     
     def to_phase(phase_alias)
