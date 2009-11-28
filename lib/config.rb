@@ -2,11 +2,6 @@ require 'yaml'
 require 'cygwin_util'
 
 
-# Possibilities:
-# - keep an index of the order of modules (simulates reactor) and auto-correct order mistakes
-# - keep track of elapsed build time
-# - a way to generate a skeleton 'm.yml' file
-# 
 module MScript 
   CONFIG_FILENAME = 'm.yml'
   

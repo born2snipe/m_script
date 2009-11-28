@@ -23,7 +23,6 @@ module MScript
         commands << "mvn #{phases.join(' ')} -f #{File.join(directory, 'pom.xml')} #{builds['arguments']}"
       end
       
-      # was done this way because Control+C does not kill all builds?? WTF?!
       result = true
       i = 0
       while result && i < commands.length
