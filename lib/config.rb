@@ -19,7 +19,7 @@ module MScript
       @file_util = MScript::FileUtil.new
       @cygwin_util = MScript::CygwinUtil.new
       
-      @project_directory = project_directory
+      @project_directory = @cygwin_util.fix_path(project_directory)
       config_file = YAML::load_file(File.join(project_directory, CONFIG_FILENAME));
       if (config_file['arguments'])
         @additional_args = config_file['arguments']
