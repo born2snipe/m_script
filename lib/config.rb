@@ -45,13 +45,13 @@ module MScript
         project_path = File.expand_path(File.join(project_directory, dir))
         if (!dir_has_alias.include?(dir) && @file_util.maven_project?(project_path))
           short_alias = @file_util.alias(dir)
-          if @alias_to_directory[short_alias] == nil
+          if @alias_to_directory[short_alias]
+            conflicting_modules = [@alias_to_directory[short_alias], dir]
+            raise "Folders #{conflicting_modules.join(' & ')} have a conflicting alias (#{short_alias}). I would recommend defining aliases for these two folders in the #{CONFIG_FILENAME} file"
+          else
             @directory_aliases[dir] = [short_alias, dir]          
             @alias_to_directory[short_alias] = dir
             @alias_to_directory[dir] = dir
-          else
-            conflicting_modules = [@alias_to_directory[short_alias], dir]
-            raise "Folders #{conflicting_modules.join(' & ')} have a conflicting alias (#{short_alias}). I would recommend defining aliases for these two folders in the #{CONFIG_FILENAME} file"
           end
         end
       end
