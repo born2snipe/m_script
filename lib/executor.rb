@@ -44,22 +44,26 @@ module MScript
       puts "Directory to Alias(es):\n---------------------------\n"
       
       longest_name = ""
+      names = []
       config.directory_aliases.each do |key, value|
         if (key.length > longest_name.length)
           longest_name = key
         end
+        names << key
       end
       
-      config.directory_aliases.each do |key, value|
-        number_of_dots = longest_name.length + 2 - key.length
+      names.sort { |a, b| a <=> b}.each do |directory|
+        aliases = config.directory_aliases[directory]
+        number_of_dots = longest_name.length + 2 - directory.length
         count = 0
         dots = ""
         while count < number_of_dots
           dots += "."
           count += 1
         end
-        puts "#{key}#{dots}#{value.join(', ')}\n"
+        puts "#{directory}#{dots}#{aliases.join(', ')}\n"
       end
+      
       puts "\nAvailable Phase(s):\n---------------------------\n"
       config.phases.each do |key, value|
         puts "#{key}....#{value}"
