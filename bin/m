@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 $:.unshift File.join(File.dirname(__FILE__), '..', 'lib')
-require 'm_script' 
+require 'executor' 
 
 executor = MScript::Executor.new
 command_line_args = [*ARGV]
