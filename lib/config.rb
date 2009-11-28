@@ -27,30 +27,38 @@ module MScript
       
       raise "No phases defined in configuration file: #{CONFIG_FILENAME}" if !config_file['phases']
       config_file['phases'].each { |phase| @phases[phase[0,1]] = phase }
-      dir_has_alias = []
+      
+      mapped_directories_to_aliases = {}
+      mapped_aliases_to_directories = {}
+      
       if (config_file['directory_mappings'])
-        config_file['directory_mappings'].each do |key, value| 
-          @directory_aliases[value] = [key]
-          @alias_to_directory[key] = [value]
-          dir_has_alias << value
+        config_file['directory_mappings'].each do |key, value|
+          mapped_directories_to_aliases[value] = [key]
+          mapped_aliases_to_directories[key] = value
+          index_directory_aliases(value, [key])
         end
       end
       
       @file_util.dirs(project_directory).each do |dir|
         project_path = File.expand_path(File.join(project_directory, dir))
-        if (!dir_has_alias.include?(dir) && @file_util.maven_project?(project_path))
+        if (!mapped_directories_to_aliases[dir] && @file_util.maven_project?(project_path))
           short_alias = @file_util.alias(dir)
           if @alias_to_directory[short_alias]
             conflicting_modules = [@alias_to_directory[short_alias], dir]
             raise "Folders #{conflicting_modules.join(' & ')} have a conflicting alias (#{short_alias}). I would recommend defining aliases for these two folders in the #{CONFIG_FILENAME} file"
           else
-            @directory_aliases[dir] = [short_alias, dir]          
-            @alias_to_directory[short_alias] = dir
-            @alias_to_directory[dir] = dir
+            index_directory_aliases(dir, [short_alias, dir])
           end
         end
       end
       
+    end
+    
+    def index_directory_aliases(directory, aliases)
+      @directory_aliases[directory] = aliases
+      aliases.each do |alias_name|
+        @alias_to_directory[alias_name] = directory
+      end
     end
     
     def to_directory(dir_alias)
