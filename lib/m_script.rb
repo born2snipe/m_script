@@ -20,15 +20,22 @@ module MScript
       config = MScript::Config.new(@file_util.locate_project_directory(File.expand_path('.')))
       builds = @arg_parser.parse(args)
       
+      total_builds = builds['projects'].length
+      build_count = 1
+      
       builds['projects'].each do |project|
         directory_alias = project['project']
         phase_aliases = project['phases']
         
         command = "mvn #{config.to_phases(phase_aliases).join(' ')} -f #{File.join(config.to_directory(directory_alias), 'pom.xml')} #{builds['arguments']}"
       
-        puts "------------------------------\nM Script Running....\n------------------------------\n#{command}\n------------------------------\n"
+        puts "------------------------------"
+        puts "M Script Running....#{build_count}/#{total_builds}"
+        puts "------------------------------"
+        puts "#{command}"
+        puts "------------------------------\n"
         system command
-        
+        build_count += 1
       end
       
     end
