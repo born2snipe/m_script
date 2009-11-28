@@ -24,14 +24,7 @@ module MScript
         directory_alias = project['project']
         phase_aliases = project['phases']
         
-        phases = []
-        index = 0;
-        while index < phase_aliases.length
-          phases << config.to_phase(phase_aliases[index, 1])
-          index += 1
-        end
-        
-        command = "mvn #{phases.join(' ')} -f #{File.join(config.to_directory(directory_alias), 'pom.xml')} #{builds['arguments']}"
+        command = "mvn #{config.to_phases(phase_aliases).join(' ')} -f #{File.join(config.to_directory(directory_alias), 'pom.xml')} #{builds['arguments']}"
       
         puts "------------------------------\nM Script Running....\n------------------------------\n#{command}\n------------------------------\n"
         system command
@@ -183,6 +176,16 @@ module MScript
     def to_phase(phase_alias)
       raise ArgumentError, "Could not locate phase for alias '#{phase_alias}'" if !@phases.has_key?(phase_alias)
       @phases[phase_alias]
+    end
+    
+    def to_phases(phase_aliases)
+      phases = []
+      index = 0;
+      while index < phase_aliases.length
+        phases << to_phase(phase_aliases[index, 1])
+        index += 1
+      end
+      phases
     end
   end
   

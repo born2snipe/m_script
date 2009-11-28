@@ -61,6 +61,10 @@ describe MScript::Config do
     config.additional_args.should == []
   end
   
+  it "should resolve to the proper phases" do
+    @config.to_phases('ci').should == ['clean', 'install']
+  end
+  
   it "should resolve to proper phase when an alias is given" do
     @config.to_phase('i').should == 'install'
   end
