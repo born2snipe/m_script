@@ -60,6 +60,10 @@ module MScript
         end
         puts "#{key}#{dots}#{value.join(', ')}\n"
       end
+      puts "\nAvailable Phase(s):\n---------------------------\n"
+      config.phases.each do |key, value|
+        puts "#{key}....#{value}"
+      end
       puts "\n"
     end
   end
