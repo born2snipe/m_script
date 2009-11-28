@@ -40,7 +40,7 @@ describe MScript::Config do
     lambda { 
       project_dir = File.expand_path(File.join(File.dirname(__FILE__), '..', 'fixtures', 'conflicting-auto-alias-project'))
        MScript::Config.new(project_dir)
-    }.should raise_error(ArgumentError, "Folders [module1, module2] have conflicting aliases. I would recommend defining aliases for these two folder in the m.yml file")
+    }.should raise_error(RuntimeError, "Folders module1 & module2 have a conflicting alias (m). I would recommend defining aliases for these two folders in the m.yml file")
   end
   
   it "should not auto-generate folder alias for folders that do NOT contain a pom file" do

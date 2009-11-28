@@ -154,6 +154,7 @@ module MScript
       end
       @phases = {}
       @directory_aliases = {}
+      @alias_to_directory = {}
       
       raise "No phases defined in configuration file: #{CONFIG_FILENAME}" if !config_file['phases']
       config_file['phases'].each { |phase| @phases[phase[0,1]] = phase }
@@ -161,20 +162,26 @@ module MScript
       if (config_file['directory_mappings'])
         config_file['directory_mappings'].each do |key, value| 
           @directory_aliases[value] = [key]
+          @alias_to_directory[key] = [value]
           dir_has_alias << value
         end
       end
       
       @file_util.dirs(project_directory).each do |dir|
-        if !dir_has_alias.include?(dir) && @file_util.maven_project?(File.expand_path(File.join(project_directory, dir)))
-          @directory_aliases[dir] = [@file_util.alias(dir), dir]          
+        project_path = File.expand_path(File.join(project_directory, dir))
+        if (!dir_has_alias.include?(dir) && @file_util.maven_project?(project_path))
+          short_alias = @file_util.alias(dir)
+          if @alias_to_directory[short_alias] == nil
+            @directory_aliases[dir] = [short_alias, dir]          
+            @alias_to_directory[short_alias] = dir
+            @alias_to_directory[dir] = dir
+          else
+            conflicting_modules = [@alias_to_directory[short_alias], dir]
+            raise "Folders #{conflicting_modules.join(' & ')} have a conflicting alias (#{short_alias}). I would recommend defining aliases for these two folders in the #{CONFIG_FILENAME} file"
+          end
         end
       end
       
-      @alias_to_directory = {}
-      @directory_aliases.each do |key, value|
-        value.each { |alias_name| @alias_to_directory[alias_name] = key}
-      end
     end
     
     def to_directory(dir_alias)
