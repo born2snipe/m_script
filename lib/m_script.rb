@@ -2,7 +2,6 @@ require 'yaml'
 
 
 # Possibilities:
-# - do not depend on the '&&' to determine when build should stop
 # - keep an index of the order of modules (simulates reactor) and auto-correct order mistakes
 # - keep track of elapsed build time
 # - a way to generate a skeleton 'm.yml' file
@@ -21,22 +20,25 @@ module MScript
       builds = @arg_parser.parse(args)
       
       total_builds = builds['projects'].length
-      build_count = 1
       
+      commands = []
       builds['projects'].each do |project|
         directory_alias = project['project']
         phase_aliases = project['phases']
         
-        command = "mvn #{config.to_phases(phase_aliases).join(' ')} -f #{File.join(config.to_directory(directory_alias), 'pom.xml')} #{builds['arguments']}"
-      
-        puts "------------------------------"
-        puts "M Script Running....#{build_count}/#{total_builds}"
-        puts "------------------------------"
-        puts "#{command}"
-        puts "------------------------------\n"
-        system command
-        build_count += 1
+        commands << "mvn #{config.to_phases(phase_aliases).join(' ')} -f #{File.join(config.to_directory(directory_alias), 'pom.xml')} #{builds['arguments']}"
       end
+      
+      # was done this way because Control+C does not kill all builds?? WTF?!
+      command = commands.join(' && ')
+      
+      puts "------------------------------"
+      puts "M Script Running....#{total_builds} build(s)" 
+      puts "------------------------------"
+      puts "#{command}"
+      puts "------------------------------\n"
+      
+      system command
       
     end
     
