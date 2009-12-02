@@ -23,6 +23,7 @@ module MScript
         commands << "mvn #{phases.join(' ')} -f #{File.join(directory, 'pom.xml')} #{builds['arguments']}"
       end
       
+      startTime = Time.now
       result = true
       i = 0
       while result && i < commands.length
@@ -36,6 +37,9 @@ module MScript
         result = system command
         i += 1
       end
+      puts "------------------------------"
+      puts "Ran #{i} of #{total_builds} build(s) in #{Time.now - startTime} second(s)"
+      puts "------------------------------"
     end
     
     def show_help()
