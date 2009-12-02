@@ -76,22 +76,15 @@ module MScript
     
     def to_phases(phase_aliases)
       phases = []
-      index = 0;
-      match = true
-      while index < phase_aliases.length && match
-        phase = to_phase(phase_aliases[index, 1])
+      phase_aliases.each_byte do |phase_alias|
+        phase = to_phase(phase_alias.chr)
         if (phase)
           phases << phase
         else
-          match = false
+          return []
         end
-        index += 1
       end
-      if match
-        phases
-      else
-        []
-      end
+      phases
     end
   end
   
