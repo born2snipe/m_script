@@ -1,17 +1,39 @@
-= m_script
+= M Script
 
-Description goes here.
+This is a handy ruby script for all the Maven lovers out there! The point of this script is to simplify re-building multiple modules without having to do all the footwork of changing directories.
 
-== Note on Patches/Pull Requests
- 
-* Fork the project.
-* Make your feature addition or bug fix.
-* Add tests for it. This is important so I don't break it in a
-  future version unintentionally.
-* Commit, do not mess with rakefile, version, or history.
-  (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)
-* Send me a pull request. Bonus points for topic branches.
+Example Maven Project Structure:
 
-== Copyright
+aggregate
+	- core
+	- service
+	- web-app
+	
+Example m.yml
 
-Copyright (c) 2009 born2snipe. See LICENSE for details.
+phases:
+    c: clean
+    i: install	
+	
+So now say you need to re-build your 'core' module and your 'web-app' module. To do this all you need to do is type the following:
+
+m ci c ci wa
+
+= What this does this mean?
+
+When you say 'ci' this is going to resolve to the phases 'clean' and 'install'. The next argument 'c' represents what module to build c => core module. The next 'ci' is the phases for the ws => web-app module. So you should see now how easy it is to chain modules together to be built.
+
+= How do I run in offline mode?
+
+To run in offline mode it's just as if you were running the mvn command: m ci x -o
+
+= I have arguments that I would like to always be ran with all my maven commands, what do I do?
+
+In your m.yml file just add the 'arguments:' key and add a list of arguments.
+example:
+
+arguments:
+	- -ff
+	- -o
+	
+
