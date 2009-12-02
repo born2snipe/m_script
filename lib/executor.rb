@@ -3,6 +3,8 @@ require 'config'
 require 'file_util'
 
 module MScript
+  LINE = "------------------------------------------------------------------------"
+  
   class Executor
     def initialize()
       @file_util = MScript::FileUtil.new
@@ -40,24 +42,24 @@ module MScript
           i = 0
           while result && i < commands.length
             command = commands[i]      
-            puts "------------------------------------------------------------------------"
+            puts LINE
             puts "M Script Running....#{i+1}/#{total_builds} build(s)" 
-            puts "------------------------------------------------------------------------"
+            puts LINE
             puts "#{command}"
-            puts "------------------------------------------------------------------------\n"
+            puts "#{LINE}\n"
       
             result = system command
             i += 1
           end
-          puts "------------------------------------------------------------------------"
+          puts LINE
           puts "Ran #{i} of #{total_builds} build(s) in #{Time.now - startTime} second(s)"
-          puts "------------------------------------------------------------------------"
+          puts LINE
         rescue ArgumentError => argError
-          puts "------------------------------------------------------------------------"
+          puts LINE
           puts "M Script Error"
-          puts "------------------------------------------------------------------------"
+          puts LINE
           puts "#{argError}\n\nType 'm' for the help menu and view the available aliases"
-          puts "------------------------------------------------------------------------"
+          puts LINE
         end
       end
     end
@@ -68,7 +70,7 @@ module MScript
       else
         puts "\n"
         puts "Project Directory: #{@config.project_directory}\n\n"
-        puts "Directory to Alias(es):\n------------------------------------------------------------------------\n"
+        puts "Directory to Alias(es):\n#{LINE}\n"
       
         longest_name = ""
         names = []
@@ -91,7 +93,7 @@ module MScript
           puts "#{directory}#{dots}#{aliases.join(', ')}\n"
         end
       
-        puts "\nAvailable Phase(s):\n------------------------------------------------------------------------\n"
+        puts "\nAvailable Phase(s):\n#{LINE}\n"
         @config.phases.each do |key, value|
           puts "#{key}....#{value}"
         end
