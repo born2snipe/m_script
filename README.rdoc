@@ -19,7 +19,7 @@ So now say you need to re-build your 'core' module and your 'web-app' module. To
 
 	m ci c ci wa
 
-= What this does this mean?
+= What does this mean?
 
 When you say 'ci' this is going to resolve to the phases 'clean' and 'install'. The next argument 'c' represents what module to build c => core module. The next 'ci' is the phases for the ws => web-app module. So you should see now how easy it is to chain modules together to be built.
 
