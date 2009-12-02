@@ -26,7 +26,7 @@ module MScript
       @alias_to_directory = {}
       
       raise "No phases defined in configuration file: #{CONFIG_FILENAME}" if !config_file['phases']
-      config_file['phases'].each { |phase| @phases[phase[0,1]] = phase }
+      config_file['phases'].each { |phase_alias, phase| @phases[phase_alias] = phase }
       
       mapped_directories_to_aliases = {}
       mapped_aliases_to_directories = {}

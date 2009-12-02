@@ -2,8 +2,8 @@ arguments:
     - -ff
     
 phases:
-    - clean
-    - install
+    c: clean
+    i: install
     
 directory_mappings:
     long: really-really-really-really-really-long-folder-name

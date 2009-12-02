@@ -54,7 +54,7 @@ module MScript
           puts "------------------------------------------------------------------------"
         rescue ArgumentError => argError
           puts "------------------------------------------------------------------------"
-          puts "MScript Error"
+          puts "M Script Error"
           puts "------------------------------------------------------------------------"
           puts "#{argError}\n\nType 'm' for the help menu and view the available aliases"
           puts "------------------------------------------------------------------------"
