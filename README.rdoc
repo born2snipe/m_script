@@ -4,20 +4,20 @@ This is a handy ruby script for all the Maven lovers out there! The point of thi
 
 Example Maven Project Structure:
 
-aggregate
-	- core
-	- service
-	- web-app
+	aggregate
+		- core
+		- service
+		- web-app
 	
 Example m.yml
 
-phases:
-    c: clean
-    i: install	
+	phases:
+	    c: clean
+	    i: install	
 	
 So now say you need to re-build your 'core' module and your 'web-app' module. To do this all you need to do is type the following:
 
-m ci c ci wa
+	m ci c ci wa
 
 = What this does this mean?
 
@@ -32,8 +32,8 @@ To run in offline mode it's just as if you were running the mvn command: m ci x 
 In your m.yml file just add the 'arguments:' key and add a list of arguments.
 example:
 
-arguments:
-	- -ff
-	- -o
+	arguments:
+		- -ff
+		- -o
 	
 
