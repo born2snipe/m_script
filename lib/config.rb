@@ -62,23 +62,36 @@ module MScript
     end
     
     def to_directory(dir_alias)
-      raise ArgumentError, "Could not locate directory for alias '#{dir_alias}'" if !@alias_to_directory.has_key?(dir_alias)
-      @cygwin_util.fix_path(File.join(@project_directory, @alias_to_directory[dir_alias]))
+      directory = @alias_to_directory[dir_alias]
+      if (directory)
+        @cygwin_util.fix_path(File.join(@project_directory, directory))
+      else
+        directory
+      end
     end
     
     def to_phase(phase_alias)
-      raise ArgumentError, "Could not locate phase for alias '#{phase_alias}'" if !@phases.has_key?(phase_alias)
       @phases[phase_alias]
     end
     
     def to_phases(phase_aliases)
       phases = []
       index = 0;
-      while index < phase_aliases.length
-        phases << to_phase(phase_aliases[index, 1])
+      match = true
+      while index < phase_aliases.length && match
+        phase = to_phase(phase_aliases[index, 1])
+        if (phase)
+          phases << phase
+        else
+          match = false
+        end
         index += 1
       end
-      phases
+      if match
+        phases
+      else
+        []
+      end
     end
   end
   

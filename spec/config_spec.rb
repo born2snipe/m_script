@@ -7,26 +7,22 @@ describe MScript::Config do
      @config = MScript::Config.new(@project_dir)
   end
   
-  ##################################
-  # TODO - these validation checks should be done by another class
-  ##################################
-  
   it "should throw an error if project directory is nil" do
     lambda { 
       MScript::Config.new(nil)
     }.should raise_error(RuntimeError, "Could not locate project directory")
   end
   
-  it "should raise an error if a directory alias can not be resolved to a directory" do
-     lambda { 
-       @config.to_directory('doesNotExist')
-     }.should raise_error(ArgumentError, "Could not locate directory for alias 'doesNotExist'")
+  it "should return nil if a directory alias can not be resolved to a directory" do
+       @config.to_directory('doesNotExist').should == nil
   end
-
-  it "should raise an error if a phase alias can not be resolved to a phase" do
-    lambda { 
-     @config.to_phase('doesNotExist') 
-    }.should raise_error(ArgumentError, "Could not locate phase for alias 'doesNotExist'")
+  
+  it "should return an empty list if an alias could not be found" do
+    @config.to_phases('cx').should == []
+  end
+  
+  it "should return nil if a phase alias can not be resolved to a phase" do
+     @config.to_phase('doesNotExist').should == nil
    end
   
    it "should raise an error if no phases are defined in the configuration file" do

@@ -17,35 +17,48 @@ module MScript
       if (!@config)
         puts "Appears to not be a MScript project. Could not locate the #{CONFIG_FILENAME} configuration file"
       else
-        builds = @arg_parser.parse(args)
+        begin
+          builds = @arg_parser.parse(args)
       
-        total_builds = builds['projects'].length
+          total_builds = builds['projects'].length
       
-        commands = []
-        builds['projects'].each do |project|
-          directory = @config.to_directory(project['project'])
-          phases = @config.to_phases(project['phases'])
+          commands = []
+          builds['projects'].each do |project|
+            dir_alias = project['project']
+            directory = @config.to_directory(dir_alias)
+            raise ArgumentError, "Could not locate directory for directory alias '#{dir_alias}'" if directory == nil
+            
+            phase_alias = project['phases']
+            phases = @config.to_phases(phase_alias)
+            raise ArgumentError, "Could not locate phase for alias '#{phase_alias}'" if phases.length == 0
         
-          commands << "mvn #{phases.join(' ')} -f #{File.join(directory, 'pom.xml')} #{builds['arguments']}"
-        end
+            commands << "mvn #{phases.join(' ')} -f #{File.join(directory, 'pom.xml')} #{builds['arguments']}"
+          end
       
-        startTime = Time.now
-        result = true
-        i = 0
-        while result && i < commands.length
-          command = commands[i]      
-          puts "------------------------------------------------------------------------"
-          puts "M Script Running....#{i+1}/#{total_builds} build(s)" 
-          puts "------------------------------------------------------------------------"
-          puts "#{command}"
-          puts "------------------------------------------------------------------------\n"
+          startTime = Time.now
+          result = true
+          i = 0
+          while result && i < commands.length
+            command = commands[i]      
+            puts "------------------------------------------------------------------------"
+            puts "M Script Running....#{i+1}/#{total_builds} build(s)" 
+            puts "------------------------------------------------------------------------"
+            puts "#{command}"
+            puts "------------------------------------------------------------------------\n"
       
-          result = system command
-          i += 1
+            result = system command
+            i += 1
+          end
+          puts "------------------------------------------------------------------------"
+          puts "Ran #{i} of #{total_builds} build(s) in #{Time.now - startTime} second(s)"
+          puts "------------------------------------------------------------------------"
+        rescue ArgumentError => argError
+          puts "------------------------------------------------------------------------"
+          puts "MScript Error"
+          puts "------------------------------------------------------------------------"
+          puts "#{argError}\n\nType 'm' for the help menu and view the available aliases"
+          puts "------------------------------------------------------------------------"
         end
-        puts "------------------------------------------------------------------------"
-        puts "Ran #{i} of #{total_builds} build(s) in #{Time.now - startTime} second(s)"
-        puts "------------------------------------------------------------------------"
       end
     end
     
