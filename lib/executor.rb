@@ -34,18 +34,18 @@ module MScript
         i = 0
         while result && i < commands.length
           command = commands[i]      
-          puts "------------------------------"
+          puts "------------------------------------------------------------------------"
           puts "M Script Running....#{i+1}/#{total_builds} build(s)" 
-          puts "------------------------------"
+          puts "------------------------------------------------------------------------"
           puts "#{command}"
-          puts "------------------------------\n"
+          puts "------------------------------------------------------------------------\n"
       
           result = system command
           i += 1
         end
-        puts "------------------------------"
+        puts "------------------------------------------------------------------------"
         puts "Ran #{i} of #{total_builds} build(s) in #{Time.now - startTime} second(s)"
-        puts "------------------------------"
+        puts "------------------------------------------------------------------------"
       end
     end
     
@@ -55,7 +55,7 @@ module MScript
       else
         puts "\n"
         puts "Project Directory: #{@config.project_directory}\n\n"
-        puts "Directory to Alias(es):\n---------------------------\n"
+        puts "Directory to Alias(es):\n------------------------------------------------------------------------\n"
       
         longest_name = ""
         names = []
@@ -78,7 +78,7 @@ module MScript
           puts "#{directory}#{dots}#{aliases.join(', ')}\n"
         end
       
-        puts "\nAvailable Phase(s):\n---------------------------\n"
+        puts "\nAvailable Phase(s):\n------------------------------------------------------------------------\n"
         @config.phases.each do |key, value|
           puts "#{key}....#{value}"
         end
