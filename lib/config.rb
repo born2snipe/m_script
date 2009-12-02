@@ -78,11 +78,8 @@ module MScript
       phases = []
       phase_aliases.each_byte do |phase_alias|
         phase = to_phase(phase_alias.chr)
-        if (phase)
-          phases << phase
-        else
-          return []
-        end
+        raise ArgumentError, "Could not locate phase for alias '#{phase_alias.chr}'" if (phase == nil)
+        phases << phase
       end
       phases
     end

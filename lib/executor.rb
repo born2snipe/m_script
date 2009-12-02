@@ -32,7 +32,6 @@ module MScript
             
             phase_alias = project['phases']
             phases = @config.to_phases(phase_alias)
-            raise ArgumentError, "Could not locate phase for alias '#{phase_alias}'" if phases.length == 0
         
             commands << "mvn #{phases.join(' ')} -f #{File.join(directory, 'pom.xml')} #{builds['arguments']}"
           end

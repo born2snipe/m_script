@@ -17,8 +17,10 @@ describe MScript::Config do
        @config.to_directory('doesNotExist').should == nil
   end
   
-  it "should return an empty list if an alias could not be found" do
-    @config.to_phases('cx').should == []
+  it "should throw an error if an alias could not be found" do
+    lambda {
+      @config.to_phases('cx')
+    }.should raise_error(ArgumentError, "Could not locate phase for alias 'x'")
   end
   
   it "should return nil if a phase alias can not be resolved to a phase" do
